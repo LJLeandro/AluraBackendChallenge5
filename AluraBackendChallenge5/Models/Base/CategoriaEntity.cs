@@ -1,0 +1,21 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
+
+namespace AluraBackendChallenge5.Models.Base
+{
+    [Table("categorias")]
+    public class CategoriaEntity : BaseEntity
+    {
+        [Required]
+        [StringLength(50)]
+        public string Titulo { get; set; }
+
+        [Required]
+        [StringLength(50)]
+        public string Cor { get; set; }
+
+        [JsonIgnore]
+        public ICollection<VideoEntity> Videos { get; set; }
+    }
+}

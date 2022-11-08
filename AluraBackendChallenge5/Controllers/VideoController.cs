@@ -1,0 +1,82 @@
+﻿using AluraBackendChallenge5.Data.ValueObjects;
+using AluraBackendChallenge5.Repositories;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+
+namespace AluraBackendChallenge5.Controllers
+{
+    [Route("api/v1/videos")]
+    [ApiController]
+    public class VideoController : ControllerBase
+    {
+        private IVideoRepository _repository;
+
+        public VideoController(IVideoRepository repository)
+        {
+            _repository = repository ??
+                throw new ArgumentNullException(nameof(repository));
+        }
+
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Create(VideoVO videoVO)
+        {
+            if (videoVO == null) return BadRequest();
+
+            var videoCreated = await _repository.Create(videoVO);
+
+            return new ObjectResult(videoCreated) { StatusCode = StatusCodes.Status201Created };
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<IActionResult> FindAll()
+        {
+            var videos = await _repository.FindAll();
+
+            return new ObjectResult(videos) { StatusCode = StatusCodes.Status200OK };
+        }
+
+        [Authorize]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> FindById(int id)
+        {
+            var video = await _repository.FindById(id);
+            if (video == null) return NotFound();
+
+            return new ObjectResult(video) { StatusCode = StatusCodes.Status200OK };
+        }
+
+        [Authorize]
+        [HttpGet("search")]
+        public async Task<IActionResult> FindByName([FromQuery] string name)
+        {
+            var videos = await _repository.FindVideosByName(name);
+            if (videos == null) return NotFound();
+
+            return new ObjectResult(videos) { StatusCode = StatusCodes.Status200OK };
+        }
+
+        [Authorize]
+        [HttpPut]
+        public async Task<IActionResult> Update(VideoVO videoVO)
+        {
+            if (videoVO == null) return BadRequest();
+
+            var videoRegistered = await _repository.Update(videoVO);
+
+            return new ObjectResult(videoRegistered) { StatusCode = StatusCodes.Status200OK };
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var status = await _repository.Delete(id);
+            if (!status) return BadRequest();
+            return new ObjectResult(new { status }) { StatusCode = StatusCodes.Status200OK };
+        }
+
+    }
+}
