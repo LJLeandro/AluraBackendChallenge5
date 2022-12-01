@@ -53,5 +53,5 @@ jobs:
         with:
           app-name: 'AluraChallengeBackEnd'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8773E8DB24C64423A32EE1887A98A3C5 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_8451052877C64C09BC20719D5C301265 }}
           package: .
